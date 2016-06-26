@@ -3,7 +3,26 @@
 PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-
+	<!-- 加载属性文件 -->
+	<properties resource="db.properties">
+		<!-- properties中还可以配置属性名和属性值，不建议在这里配置 -->
+		<!-- <property name="" value=""/> -->
+	</properties>
+	
+	<!-- 全局配置参数，需要时再配置 -->
+	<!-- <settings></settings> -->
+	
+	<!-- 自定义别名 -->
+	<typeAliases>
+		<!-- 针对单个别名定义  type:类型路径 alias:要定义的别名 -->
+		<!-- <typeAlias type="gao.mybatis.po.User" alias="user"/> -->
+		<!-- 批量别名定义，指定包名，mybatis自动扫描包中的po类，自动定义别名，别名就是类名（首字母大写小写都可以） -->
+		<package name="gao.mybatis.po"/>
+	</typeAliases>
+	
+	<!-- 类型处理器，实现java类型与jdbc类型的转换 -->
+	<!-- <typeHandlers></typeHandlers> -->
+	
 	<!-- 和spring整合后 environments配置将废除-->
 	<environments default="development">
 		<environment id="development">
@@ -11,16 +30,34 @@ PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
 			<transactionManager type="JDBC" />
 		<!-- 数据库连接池，由mybatis管理-->
 			<dataSource type="POOLED">
-				<property name="driver" value="com.mysql.jdbc.Driver" />
-				<property name="url" value="jdbc:mysql://localhost:3306/mybatis" />
-				<property name="username" value="root" />
-				<property name="password" value="1234" />
+				<property name="driver" value="${jdbc.driver}" />
+				<property name="url" value="${jdbc.url}" />
+				<property name="username" value="${jdbc.username}" />
+				<property name="password" value="${jdbc.password}" />
 			</dataSource>
 		</environment>
 	</environments>
 	<!-- 加载 映射文件 -->
 	<mappers>
+		<!-- 通过resource方法一次加载一个配置文件 -->
 		<mapper resource="sqlmap/User.xml"/>
+		<!-- <mapper resource="mapper/UserMapper.xml"/> -->
+		
+		<!-- 通过mapper接口加载映射文件 
+		需要遵循一些规范：
+		1.需要将mapper接口类名与mapper.xml映射文件名称保持一致
+		2.mapper接口类与mapper.xml映射文件需要在一个目录中
+		3.使用的是mapper代理方法
+		-->
+		<!--<mapper class="gao.mybatis.mapper.UserMapper"/>-->
+		
+		<!-- 批量加载mapper，指定mapper接口包名，mybatis自动扫描所有接口进行加载（推荐使用）
+		需要遵循一些规范：
+		1.需要将mapper接口类名与mapper.xml映射文件名称保持一致
+		2.mapper接口类与mapper.xml映射文件需要在一个目录中
+		3.使用的是mapper代理方法
+		 -->
+		 <package name="gao.mybatis.mapper"/>
 	</mappers>
 	
 </configuration>

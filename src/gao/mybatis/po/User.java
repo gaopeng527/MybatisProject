@@ -1,6 +1,7 @@
 package gao.mybatis.po;
 
 import java.util.Date;
+import java.util.List;
 
 public class User {
 	
@@ -9,6 +10,7 @@ public class User {
 	private String sex;
 	private Date birthday;
 	private String address;
+	private List<Orders> ordersList; // 订单列表，一个用户可以有多个订单
 	public int getId() {
 		return id;
 	}
@@ -43,6 +45,12 @@ public class User {
 	public String toString() {
 		return "User [id=" + id + ", username=" + username + ", sex=" + sex
 				+ ", birthday=" + birthday + ", address=" + address + "]";
+	}
+	public List<Orders> getOrdersList() {
+		return ordersList;
+	}
+	public void setOrdersList(List<Orders> ordersList) {
+		this.ordersList = ordersList;
 	}
 
 

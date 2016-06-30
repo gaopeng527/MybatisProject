@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import java.io.InputStream;
 import java.util.List;
 
+import javax.jws.soap.SOAPBinding.Use;
+
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -101,6 +103,22 @@ public class OrdersMapperCustomTest {
 		// 释放资源
 		session.close();
 		System.out.println(ordersList);
+	}
+	
+	// 测试一级缓存(mybatis默认开启一级缓存)
+	@Test
+	public void testCache1() throws Exception {
+		// 创建会话
+		SqlSession session = sqlSessionFactory.openSession();
+		// 根据会话创建代理对象
+		UserMapper userMapper = session.getMapper(UserMapper.class);
+		// 下边的查询使用一个sqlSession（一级缓存是sqlSession级别的）
+		// 第一次查询用户id为1的用户
+		User user1 = userMapper.findUserById(1);
+		System.out.println(user1);
+		// 第二次查询用户id为1的用户
+		User user2 = userMapper.findUserById(1);
+		System.out.println(user2);
 	}
 
 }

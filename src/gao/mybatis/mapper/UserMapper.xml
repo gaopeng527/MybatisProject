@@ -7,6 +7,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 注意：使用mapper代理方法开发，namespace有特殊重要的作用
 -->
 <mapper namespace="gao.mybatis.mapper.UserMapper">
+	<!-- 开启本mapper的namespace下的二级缓存，
+	可以在select中配置useCach=false来禁用相应的statement的二级缓存
+	也可以在其中配置flushCache=true，默认情况下为true，即刷新缓存（修改数据时刷新)，如果改成false就不会刷新
+	 用户可以对刷新频率进行配置
+	 -->
+	 <!-- type：指定cache接口实现类的类型，mybatis默认使用PerpetualCache
+	 要和ehcache整合，需要配置type为ehcache的cache接口实现类的类型org.mybatis.caches.ehcache.EhcacheCache
+	  -->
+	<cache type="org.mybatis.caches.ehcache.EhcacheCache"></cache>
 
 	<!-- 定义sql片段实现代码重用
 	id：sql片段的唯一标识

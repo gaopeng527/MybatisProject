@@ -3,6 +3,7 @@ package gao.mybatis.mapper;
 import static org.junit.Assert.*;
 
 import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 
 import javax.jws.soap.SOAPBinding.Use;
@@ -116,9 +117,53 @@ public class OrdersMapperCustomTest {
 		// 第一次查询用户id为1的用户
 		User user1 = userMapper.findUserById(1);
 		System.out.println(user1);
+		
+		// 如果中间执行了commit操作（即对数据库进行了更新），那么会清空一级缓存
+		user1.setAddress("北京");
+		userMapper.updateUser(user1);
+		// 提交事务
+		session.commit();
+		
 		// 第二次查询用户id为1的用户
 		User user2 = userMapper.findUserById(1);
 		System.out.println(user2);
+	}
+	
+	// mybatis二级缓存是mapper（命名空间）范围级别，
+	// 除了要在SqlMapConfig.xml中设置二级缓存的总开关，
+	// 还要在具体的mapper.xml中开启二级缓存
+	// 测试二级缓存(mybatis默认不开启)
+	@Test
+	public void testCache2() throws Exception {
+		// 创建会话
+		SqlSession session1 = sqlSessionFactory.openSession();
+		SqlSession session2 = sqlSessionFactory.openSession();
+		SqlSession session3 = sqlSessionFactory.openSession();
+		
+		// 根据会话创建代理对象
+		UserMapper userMapper1 = session1.getMapper(UserMapper.class);
+		// 下边的查询使用一个sqlSession（一级缓存是sqlSession级别的）
+		// 第一次查询用户id为1的用户
+		User user1 = userMapper1.findUserById(1);
+		System.out.println(user1);
+		// 只有执行关闭操作，SqlSession中的内容才会写入二级缓存
+		session1.close();
+		
+//		// 如果中间执行了commit操作（即对数据库进行了更新），那么会清空二级缓存
+//		UserMapper userMapper3 = session3.getMapper(UserMapper.class);
+//		User user3 = userMapper3.findUserById(1);
+//		user3.setBirthday(new Date());
+//		userMapper3.updateUser(user3);
+//		// 提交事务
+//		session3.commit();	
+//		session3.close();
+		
+		// 第二次查询用户id为1的用户
+		UserMapper userMapper2 = session2.getMapper(UserMapper.class);
+		User user2 = userMapper2.findUserById(1);
+		System.out.println(user2);
+		session2.close();
+
 	}
 
 }

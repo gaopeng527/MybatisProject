@@ -1,10 +1,15 @@
 package gao.mybatis.po;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class User {
+public class User implements Serializable {
 	
+	/**
+	 * 二级缓存存储介质多种多样，不一定在内存中，所以其对应的pojo类要实现序列化接口
+	 */
+	private static final long serialVersionUID = 1728545236233563030L;
 	private int id;
 	private String username;
 	private String sex;
